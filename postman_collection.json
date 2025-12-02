@@ -1,0 +1,119 @@
+{
+  "info": {
+    "name": "Lab 7 Serverless CRUD API",
+    "description": "Collection for testing the serverless CRUD API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "api_url",
+      "value": "https://your-api-id.execute-api.us-east-1.amazonaws.com/Prod",
+      "type": "string"
+    },
+    {
+      "key": "item_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Create Item",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Complete Lab 7\",\n  \"description\": \"Finish the serverless application lab\",\n  \"status\": \"in-progress\",\n  \"priority\": \"high\",\n  \"category\": \"assignment\"\n}"
+        },
+        "url": {
+          "raw": "{{api_url}}/items",
+          "host": ["{{api_url}}"],
+          "path": ["items"]
+        },
+        "description": "Create a new item in the DynamoDB table"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "    var jsonData = pm.response.json();",
+              "    pm.collectionVariables.set('item_id', jsonData.item.id);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get All Items",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{api_url}}/items",
+          "host": ["{{api_url}}"],
+          "path": ["items"]
+        },
+        "description": "Retrieve all items from the DynamoDB table"
+      }
+    },
+    {
+      "name": "Get Item by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{api_url}}/items/{{item_id}}",
+          "host": ["{{api_url}}"],
+          "path": ["items", "{{item_id}}"]
+        },
+        "description": "Retrieve a specific item by its ID"
+      }
+    },
+    {
+      "name": "Update Item",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"completed\",\n  \"priority\": \"low\"\n}"
+        },
+        "url": {
+          "raw": "{{api_url}}/items/{{item_id}}",
+          "host": ["{{api_url}}"],
+          "path": ["items", "{{item_id}}"]
+        },
+        "description": "Update an existing item"
+      }
+    },
+    {
+      "name": "Delete Item",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{api_url}}/items/{{item_id}}",
+          "host": ["{{api_url}}"],
+          "path": ["items", "{{item_id}}"]
+        },
+        "description": "Delete an item from the DynamoDB table"
+      }
+    }
+  ]
+}
+

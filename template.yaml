@@ -1,0 +1,130 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Serverless CRUD API with DynamoDB, Lambda, and API Gateway
+
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 128
+    Runtime: python3.12
+    Environment:
+      Variables:
+        TABLE_NAME: !Ref ItemsTable
+    Tracing: Active  # Enable X-Ray tracing for Lambda
+  Api:
+    TracingEnabled: true  # Enable X-Ray tracing for API Gateway
+
+Resources:
+  # DynamoDB Table
+  ItemsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ItemsTable
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+
+  # Lambda Function: Create Item
+  CreateItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: CreateItemFunction
+      Handler: src/handlers/create_item.lambda_handler
+      CodeUri: .
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ItemsTable
+        - AWSXRayDaemonWriteAccess
+      Events:
+        CreateItem:
+          Type: Api
+          Properties:
+            Path: /items
+            Method: post
+
+  # Lambda Function: Get All Items
+  GetAllItemsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: GetAllItemsFunction
+      Handler: src/handlers/get_all_items.lambda_handler
+      CodeUri: .
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ItemsTable
+        - AWSXRayDaemonWriteAccess
+      Events:
+        GetAllItems:
+          Type: Api
+          Properties:
+            Path: /items
+            Method: get
+
+  # Lambda Function: Get Item by ID
+  GetItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: GetItemFunction
+      Handler: src/handlers/get_item.lambda_handler
+      CodeUri: .
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ItemsTable
+        - AWSXRayDaemonWriteAccess
+      Events:
+        GetItem:
+          Type: Api
+          Properties:
+            Path: /items/{id}
+            Method: get
+
+  # Lambda Function: Update Item
+  UpdateItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: UpdateItemFunction
+      Handler: src/handlers/update_item.lambda_handler
+      CodeUri: .
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ItemsTable
+        - AWSXRayDaemonWriteAccess
+      Events:
+        UpdateItem:
+          Type: Api
+          Properties:
+            Path: /items/{id}
+            Method: put
+
+  # Lambda Function: Delete Item
+  DeleteItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: DeleteItemFunction
+      Handler: src/handlers/delete_item.lambda_handler
+      CodeUri: .
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ItemsTable
+        - AWSXRayDaemonWriteAccess
+      Events:
+        DeleteItem:
+          Type: Api
+          Properties:
+            Path: /items/{id}
+            Method: delete
+
+Outputs:
+  ItemsApi:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  ItemsTableName:
+    Description: "DynamoDB Table Name"
+    Value: !Ref ItemsTable
+
