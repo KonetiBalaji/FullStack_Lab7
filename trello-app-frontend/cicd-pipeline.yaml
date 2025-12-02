@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: CI/CD Pipeline for Trello App Frontend
+Description: CI/CD Pipeline for Lab 7 Trello App Frontend
 
 Parameters:
   GitHubRepo:
@@ -34,7 +34,7 @@ Resources:
   ArtifactsBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub 'trello-app-frontend-artifacts-${AWS::AccountId}'
+      BucketName: !Sub 'lab7-trello-app-frontend-artifacts-${AWS::AccountId}'
       VersioningConfiguration:
         Status: Enabled
 
@@ -42,7 +42,7 @@ Resources:
   FrontendBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
-      Name: trello-app-frontend-build
+      Name: lab7-trello-app-frontend-build
       ServiceRole: !GetAtt CodeBuildRole.Arn
       Artifacts:
         Type: S3
@@ -76,7 +76,7 @@ Resources:
   Pipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
-      Name: trello-app-frontend-pipeline
+      Name: lab7-trello-app-frontend-pipeline
       RoleArn: !GetAtt PipelineRole.Arn
       ArtifactStore:
         Type: S3

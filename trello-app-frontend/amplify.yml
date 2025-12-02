@@ -1,6 +1,6 @@
 version: 1
 applications:
-  - appRoot: trello-app-frontend
+  - appRoot: lab7-trello-app-frontend
     frontend:
       phases:
         preBuild:

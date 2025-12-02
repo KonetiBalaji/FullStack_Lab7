@@ -21,7 +21,7 @@ Resources:
   TasksTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: TasksTable
+      TableName: Lab7TasksTable
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: userId
@@ -39,7 +39,7 @@ Resources:
   CommentsTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: CommentsTable
+      TableName: Lab7CommentsTable
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: taskId
@@ -55,7 +55,7 @@ Resources:
   ActivityLogTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: ActivityLogTable
+      TableName: Lab7ActivityLogTable
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: taskId
@@ -72,20 +72,20 @@ Resources:
   ActivityLogDLQ:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: activity-log-dlq
+      QueueName: lab7-activity-log-dlq
       MessageRetentionPeriod: 1209600
 
   ReminderDLQ:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: reminder-dlq
+      QueueName: lab7-reminder-dlq
       MessageRetentionPeriod: 1209600
 
   # SQS Queues
   ActivityLogQueue:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: activity-log-queue
+      QueueName: lab7-activity-log-queue
       VisibilityTimeout: 60
       MessageRetentionPeriod: 1209600
       RedrivePolicy:
@@ -95,7 +95,7 @@ Resources:
   ReminderQueue:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: reminder-queue
+      QueueName: lab7-reminder-queue
       VisibilityTimeout: 60
       MessageRetentionPeriod: 1209600
       RedrivePolicy:
@@ -106,7 +106,7 @@ Resources:
   UserPool:
     Type: AWS::Cognito::UserPool
     Properties:
-      UserPoolName: TrelloAppUserPool
+      UserPoolName: Lab7TrelloAppUserPool
       AutoVerifiedAttributes:
         - email
       UsernameAttributes:
@@ -128,7 +128,7 @@ Resources:
     Type: AWS::Cognito::UserPoolClient
     Properties:
       UserPoolId: !Ref UserPool
-      ClientName: TrelloAppClient
+      ClientName: Lab7TrelloAppClient
       GenerateSecret: false
       ExplicitAuthFlows:
         - ALLOW_USER_PASSWORD_AUTH
@@ -139,7 +139,7 @@ Resources:
   TrelloApi:
     Type: AWS::Serverless::Api
     Properties:
-      Name: TrelloAppApi
+      Name: Lab7TrelloAppApi
       StageName: prod
       TracingEnabled: true
       Auth:
@@ -166,7 +166,7 @@ Resources:
   CreateTaskFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: CreateTaskFunction
+      FunctionName: Lab7CreateTaskFunction
       CodeUri: functions/createTask/
       Handler: index.handler
       Tracing: Active
@@ -188,7 +188,7 @@ Resources:
   GetTasksFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: GetTasksFunction
+      FunctionName: Lab7GetTasksFunction
       CodeUri: functions/getTasks/
       Handler: index.handler
       Tracing: Active
@@ -208,7 +208,7 @@ Resources:
   UpdateTaskFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: UpdateTaskFunction
+      FunctionName: Lab7UpdateTaskFunction
       CodeUri: functions/updateTask/
       Handler: index.handler
       Tracing: Active
@@ -228,7 +228,7 @@ Resources:
   DeleteTaskFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: DeleteTaskFunction
+      FunctionName: Lab7DeleteTaskFunction
       CodeUri: functions/deleteTask/
       Handler: index.handler
       Tracing: Active

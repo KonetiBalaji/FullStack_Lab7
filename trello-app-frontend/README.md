@@ -1,4 +1,4 @@
-# Trello App Frontend
+# Lab 7 Trello App Frontend
 
 React TypeScript frontend for Trello-like task management application.
 
