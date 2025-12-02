@@ -1,7 +1,0 @@
-{
-  "name": "cors-handler",
-  "version": "1.0.0",
-  "description": "CORS preflight handler for API Gateway",
-  "main": "index.js"
-}
-
